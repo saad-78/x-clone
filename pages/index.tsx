@@ -1,115 +1,100 @@
 import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
+import { BsTwitterX } from "react-icons/bs";
+import { BiSolidHomeCircle } from "react-icons/bi";
+import { BiHash } from "react-icons/bi";
+import { BsBell } from "react-icons/bs";
+import { BsEnvelope } from "react-icons/bs";
+import { BsBookmark } from "react-icons/bs";
+import { CiUser } from "react-icons/ci";
+import { CiMoneyBill } from "react-icons/ci";
+import FeedCard from "@/components/FeedCard";
+import { SlOptions } from "react-icons/sl";
+import React from "react";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
+interface TwitterSideBarButton {
+  title: string;
+  icon: React.ReactNode;
+}
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+const sideBarMenuItems: TwitterSideBarButton[] = [
+  {
+    title: "Home",
+    icon: <BiSolidHomeCircle />,
+  },
+  {
+    title: "Explore",
+    icon: <BiHash />,
+  },
+  {
+    title: "Notification",
+    icon: <BsBell />,
+  },
+  {
+    title: "Messages",
+    icon: <BsEnvelope />,
+  },
+  {
+    title: "Bookmarks",
+    icon: <BsBookmark />,
+  },
+  {
+    title: "X Blue",
+    icon: <CiMoneyBill />,
+  },
+  {
+    title: "Profile",
+    icon: <CiUser />,
+  },
+  {
+    title: "More Options",
+    icon: <SlOptions />,
+  },
+];
 
 export default function Home() {
   return (
-    <div
-      className={`${geistSans.className} ${geistMono.className} font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20`}
-    >
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              pages/index.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div>
+      <div className="grid grid-cols-12 h-screen w-screen px-56">
+        <div className="col-span-3  pt-1 ml-28">
+          <div className="text-2xl h-fit w-fit hover:bg-gray-600 rounded-full p-4 cursor-pointer transition-all">
+            <BsTwitterX />
+          </div>
+
+          <div className="mt-1 text-xl  pr-4">
+            <ul>
+              {sideBarMenuItems.map((item) => (
+                <li
+                  className="flex justify-start items-center gap-4 hover:bg-gray-600 rounded-full px-3 py-3 w-fit cursor-pointer mt-2"
+                  key={item.title}
+                >
+                  <span className="text-3xl">{item.icon}</span>
+                  <span>{item.title}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-5 px-3">
+              <button className="bg-[#1d9bf0] py-3 px-4 font-semibold rounded-full w-full  text-lg">
+                Tweet
+              </button>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <div className="col-span-5 border-r-[1px] border-l-[1px]  border-gray-600 h-screen overflow-scroll scrollbar-hide">
+          <FeedCard />
+          <FeedCard />
+          <FeedCard />
+          <FeedCard />
+          <FeedCard />
+          <FeedCard />
+          <FeedCard />
+          <FeedCard />
+          <FeedCard />
+          <FeedCard />
+          <FeedCard />
+          <FeedCard />
+        </div>
+        <div className="col-span-3"></div>
+      </div>
     </div>
   );
 }
