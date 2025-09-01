@@ -1,16 +1,22 @@
 import TwitterLayout from "@/components/Layout/TwitterLayout";
 import Image from "next/image";
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import { BsArrowLeftShort } from "react-icons/bs";
 import { useCurrentUser } from "@/hooks/user";
 import FeedCard from "@/components/FeedCard";
-import { Tweet } from "@/gql/graphql";
+import { Tweet, User } from "@/gql/graphql";
 import { useRouter } from "next/router";
-const UserProfilePage: NextPage = () => {
-  const { user } = useCurrentUser();
+import { getUserByIdQuery } from "@/graphql/query/user";
+import { graphqlClient } from "@/clients/api";
+
+interface ServerProps {
+  userInfo?: User;
+}
+
+const UserProfilePage: NextPage<ServerProps> = (props) => {
   const router = useRouter();
 
-  console.log(router.query);
+  console.log(props);
   return (
     <div>
       <TwitterLayout>
@@ -19,13 +25,15 @@ const UserProfilePage: NextPage = () => {
             <BsArrowLeftShort className="text-4xl" />
             <div>
               <h1 className="text-2xl font-bold">Saad Momin</h1>
-              <h1 className="text-md font-bold text-slate-500">100 Tweets</h1>
+              <h1 className="text-md font-bold text-slate-500">
+                {props.userInfo?.tweets?.length} Tweets
+              </h1>
             </div>
           </nav>
           <div className="p-4 border-b border-slate-800">
-            {user?.profileImageURL && (
+            {props.userInfo?.profileImageURL && (
               <Image
-                src={user?.profileImageURL}
+                src={props.userInfo?.profileImageURL}
                 alt="user"
                 className="rounded-full"
                 width={100}
@@ -35,7 +43,7 @@ const UserProfilePage: NextPage = () => {
             <h1 className="text-2xl font-bold mt-5">Saad Momin</h1>
           </div>
           <div>
-            {(user?.tweets as Tweet[])?.map((tweet) =>
+            {(props.userInfo?.tweets as Tweet[])?.map((tweet) =>
               tweet ? <FeedCard key={tweet.id} data={tweet as Tweet} /> : null
             )}
           </div>
@@ -43,6 +51,21 @@ const UserProfilePage: NextPage = () => {
       </TwitterLayout>
     </div>
   );
+};
+
+export const getServerSideProps: GetServerSideProps<ServerProps> = async (
+  context
+) => {
+  const id = context.query.id as string | undefined;
+  if (!id) return { notFound: true, props: { userInfo: undefined } };
+  const userInfo = await graphqlClient.request(getUserByIdQuery, { id });
+
+  if (!userInfo?.getUserById) return { notFound: true };
+  return {
+    props: {
+      userInfo: userInfo.getUserById as User,
+    },
+  };
 };
 
 export default UserProfilePage;

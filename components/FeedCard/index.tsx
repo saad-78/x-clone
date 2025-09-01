@@ -5,6 +5,7 @@ import { AiOutlineHeart } from "react-icons/ai";
 import { AiOutlineRetweet } from "react-icons/ai";
 import { Tweet } from "@/gql/graphql";
 import { AiOutlineUpload } from "react-icons/ai";
+import Link from "next/link";
 
 interface FeedCardProps {
   data: Tweet;
@@ -28,7 +29,9 @@ const FeedCard: React.FC<FeedCardProps> = (props) => {
         </div>
         <div className="col-span-11">
           <h5>
-            {data.author?.firstName} {data.author?.lastName}
+            <Link href={`/${data.author?.id}`}>
+              {data.author?.firstName} {data.author?.lastName}
+            </Link>
           </h5>
           <p>{data.content}</p>
           <div className="flex justify-between mt-5 text-xl items-center p-2 w-[90%]">

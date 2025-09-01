@@ -1,5 +1,4 @@
 import React, { useCallback, useState } from "react";
-
 import { useCurrentUser } from "@/hooks/user";
 import { useQueryClient } from "@tanstack/react-query";
 import Image from "next/image";
@@ -8,10 +7,17 @@ import { Tweet } from "@/gql/graphql";
 import TwitterLayout from "@/components/Layout/TwitterLayout";
 import { BiImageAlt } from "react-icons/bi";
 import FeedCard from "@/components/FeedCard";
+import { GetServerSideProps } from "next";
+import { getAllTweetsQuery } from "@/graphql/query/tweet";
+import { graphqlClient } from "@/clients/api";
 
-export default function Home() {
+interface HomeProps {
+  tweets?: Tweet[];
+}
+
+export default function Home(props: HomeProps) {
   const { user } = useCurrentUser();
-  const { tweets = [] } = useGetAllTweets();
+  const { tweets: clientTweets } = useGetAllTweets(); // Use destructured tweets from your hook
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");
   const { mutate } = useCreateTweet();
@@ -27,7 +33,11 @@ export default function Home() {
     mutate({
       content,
     });
+    setContent(""); // Clear input after creating tweet
   }, [content, mutate]);
+
+  // Use client-side tweets if available, fallback to server-side props
+  const tweetsToDisplay = clientTweets || props.tweets;
 
   return (
     <div>
@@ -67,7 +77,7 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {tweets?.map((tweet) =>
+        {tweetsToDisplay?.map((tweet) =>
           tweet ? (
             <FeedCard key={(tweet as Tweet).id} data={tweet as Tweet} />
           ) : null
@@ -76,3 +86,14 @@ export default function Home() {
     </div>
   );
 }
+
+export const getServerSideProps: GetServerSideProps<HomeProps> = async (
+  context
+) => {
+  const allTweets = await graphqlClient.request(getAllTweetsQuery);
+  return {
+    props: {
+      tweets: allTweets.getAllTweets as Tweet[],
+    },
+  };
+};
